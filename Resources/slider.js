@@ -23,6 +23,12 @@ exports.createSlider = function() {
         });
         tapCatcher.open();
     }
+    var touchStartX = 0;
+    var touchRightStarted = false;
+    var touchLeftStarted = false;
+    var buttonPressed = false;
+    var hasSlided = false;
+    var direction = "reset";
     var windowWidth = Ti.Platform.displayCaps.platformWidth;
     var windows = [];
     var OPEN_LEFT = .84 * windowWidth;
@@ -126,26 +132,41 @@ exports.createSlider = function() {
             image: "/images/button.png"
         });
         button.addEventListener("click", function() {
+            touchRightStarted || touchLeftStarted || (buttonPressed = true);
             slider.open();
         });
         win.addEventListener("touchstart", function(e) {
-            e.source.axis = parseInt(e.x);
+            touchStartX = parseInt(e.x);
         });
         win.addEventListener("touchmove", function(e) {
-            var coordinates = parseInt(e.x) - e.source.axis;
-            (coordinates > 0 || -40 > coordinates) && (e.source.moving = true);
-            if (true == e.source.moving && OPEN_LEFT >= coordinates && coordinates >= 0) {
-                visibleWindow.animate({
-                    left: coordinates,
-                    duration: ANIMATION_DURATION,
-                    curve: Ti.UI.ANIMATION_CURVE_EASE_IN_OUT
-                });
-                visibleWindow.left = coordinates;
-            }
+            var newLeft = e.x - touchStartX;
+            touchRightStarted && OPEN_LEFT >= newLeft && newLeft >= 0 ? visibleWindow.left = newLeft : touchRightStarted && 0 > newLeft || touchLeftStarted && newLeft > 0 ? visibleWindow.left = 0 : touchRightStarted && newLeft > OPEN_LEFT && (visibleWindow.left = OPEN_LEFT);
+            newLeft > 5 && !touchLeftStarted && !touchRightStarted ? touchRightStarted = true : -5 > newLeft && !touchRightStarted && !touchLeftStarted && (touchLeftStarted = true);
         });
-        win.addEventListener("touchend", function(e) {
-            e.source.moving = false;
-            visibleWindow.left >= 150 && OPEN_LEFT > visibleWindow.left ? button.fireEvent("click") : slider.close();
+        win.addEventListener("touchend", function() {
+            if (visibleWindow.left >= OPEN_LEFT / 2 && touchRightStarted) {
+                direction = "right";
+                visibleWindow.animate({
+                    left: OPEN_LEFT,
+                    duration: 150,
+                    curve: Ti.UI.ANIMATION_CURVE_EASE_OUT
+                });
+                slider.open();
+                console.log("open");
+                hasSlided = true;
+            } else {
+                direction = "reset";
+                visibleWindow.animate({
+                    left: 0,
+                    duration: 150,
+                    curve: Ti.UI.ANIMATION_CURVE_EASE_OUT
+                });
+                slider.close();
+                hasSlided = false;
+                console.log("close");
+            }
+            touchRightStarted = false;
+            touchLeftStarted = false;
         });
         if ("android" == Ti.Platform.osname) {
             var titleBar = Ti.UI.createLabel({

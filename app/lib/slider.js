@@ -2,12 +2,20 @@ var platform = Ti.Platform.osname;
 var slider = null;
 var windows = [];
 
+
+
 exports.removeSlider = function(){
 	slider = null;
 	windows = [];
 };
 
 exports.createSlider = function() {
+	var touchStartX = 0;
+	var touchRightStarted = false;
+	var touchLeftStarted = false;
+	var buttonPressed = false;
+	var hasSlided = false;
+	var direction = "reset";
 
 	var windowWidth = Ti.Platform.displayCaps.platformWidth;
 	var windows = [];
@@ -164,44 +172,105 @@ exports.createSlider = function() {
 			image : "/images/button.png"
 		});
 		button.addEventListener('click', function() {
+			if (!touchRightStarted && !touchLeftStarted) {
+				buttonPressed = true;
+			}
 			slider.open();
 		});
 		
 		win.addEventListener('touchstart', function(e){
-			e.source.axis = parseInt(e.x);
+			touchStartX = parseInt(e.x);
 		});
 		win.addEventListener('touchmove', function(e){
-			// Subtracting current position to starting horizontal position
-		    var coordinates = parseInt(e.x) - e.source.axis;
-		    // Detecting movement after a 20px shift
-		    if(coordinates > 0 || coordinates < -40){
-		        e.source.moving = true;
-		    }
-		    // Locks the window so it doesn't move further than allowed
-		    if(e.source.moving == true && coordinates <= OPEN_LEFT && coordinates >= 0){
-		        // This will smooth the animation and make it less jumpy
-		        visibleWindow.animate({
-		            left:coordinates,
-		            duration : ANIMATION_DURATION,
-					curve : Ti.UI.ANIMATION_CURVE_EASE_IN_OUT
-		        });
-		        // Defining coordinates as the final left position
-		        visibleWindow.left = coordinates;
-		    }
+			var newLeft = e.x - touchStartX;
+			if (touchRightStarted && newLeft <= OPEN_LEFT && newLeft >= 0 ) {
+				visibleWindow.left = newLeft;
+			}
+			else {
+				// Sometimes newLeft goes beyond its bounds so the view gets stuck.
+				// This is a hack to fix that.
+				if ((touchRightStarted && newLeft < 0) || (touchLeftStarted && newLeft > 0)) {
+					visibleWindow.left = 0;
+				}
+				else if (touchRightStarted && newLeft > OPEN_LEFT) {
+					visibleWindow.left = OPEN_LEFT;
+				}
+			}
+			if (newLeft > 5 && !touchLeftStarted && !touchRightStarted) {
+				touchRightStarted = true;
+				// Ti.App.fireEvent("sliderToggled", {
+					// hasSlided : false,
+					// direction : "right"
+				// });
+			}
+			else if (newLeft < -5 && !touchRightStarted && !touchLeftStarted) {
+				touchLeftStarted = true;
+				// Ti.App.fireEvent("sliderToggled", {
+					// hasSlided : false,
+					// direction : "left"
+				// });
+			}
+			// // Subtracting current position to starting horizontal position
+		    // var coordinates = parseInt(e.x) - e.source.axis;
+		    // // Detecting movement after a 20px shift
+		    // if(coordinates > 0 || coordinates < -40){
+		        // e.source.moving = true;
+		    // }
+		    // // Locks the window so it doesn't move further than allowed
+		    // if(e.source.moving == true && coordinates <= OPEN_LEFT && coordinates >= 0){
+		        // // This will smooth the animation and make it less jumpy
+		        // visibleWindow.animate({
+		            // left:coordinates,
+		            // duration : 150,
+					// curve : Ti.UI.ANIMATION_CURVE_EASE_IN_OUT
+		        // });
+		        // // Defining coordinates as the final left position
+		        // visibleWindow.left = coordinates;
+		    // }
 		});
 		
 		win.addEventListener('touchend', function(e){
-		    // No longer moving the window
-		    e.source.moving = false;
-		    if(visibleWindow.left >= 150 && visibleWindow.left < OPEN_LEFT){
-		        // Repositioning the window to the right
-		        button.fireEvent('click');
-		        //menuButton.toggle = true;
-		    }else{
-		        // Repositioning the window to the left
-		        slider.close();
-		        //menuButton.toggle = false;
-		    }
+			
+			if (visibleWindow.left >= (OPEN_LEFT/2) && touchRightStarted) {
+				direction = "right";
+				visibleWindow.animate({
+					left : OPEN_LEFT,
+					duration : 150,
+					curve : Ti.UI.ANIMATION_CURVE_EASE_OUT
+				});
+				slider.open();
+				console.log('open');
+				hasSlided = true;
+			} else {
+				direction = "reset";
+				visibleWindow.animate({
+					left : 0,
+					duration : 150,
+					curve : Ti.UI.ANIMATION_CURVE_EASE_OUT
+				});
+				slider.close();
+				hasSlided = false;
+				console.log('close');
+			}
+			// Ti.App.fireEvent("sliderToggled", {
+				// hasSlided : hasSlided,
+				// direction : direction
+			// });
+			touchRightStarted = false;
+			touchLeftStarted = false;
+		    // // No longer moving the window
+		    // e.source.moving = false;
+		    // console.log(e);
+		    // if(visibleWindow.left >= 150 && visibleWindow.left < OPEN_LEFT){
+		        // // Repositioning the window to the right
+		        // button.fireEvent('click');
+		        // //menuButton.toggle = true;
+		    // }else{
+		        // // Repositioning the window to the left
+		        // status = STATUS.OPEN;
+		        // slider.close();
+		        // //menuButton.toggle = false;
+		    // }
 		});
 
 		
