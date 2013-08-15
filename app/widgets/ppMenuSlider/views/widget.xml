@@ -1,0 +1,6 @@
+<Alloy>
+	<View id="leftMenu">
+		<View id="logoView" />
+		<TableView id="leftTableView" />
+	</View>
+</Alloy>

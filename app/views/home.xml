@@ -1,0 +1,7 @@
+<Alloy>
+	<Window backgroundColor="white">
+		<View id="home">
+			<View ns="Ti.Map" id="timap" />
+		</View>
+	</Window>
+</Alloy>

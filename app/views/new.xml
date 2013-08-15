@@ -1,0 +1,7 @@
+<Alloy>
+	<Window id="newWin" navBarHidden="false" exitOnClose="false" backgroundColor="white">
+        <View>
+        	<Label text="TEST" />
+       	</View>
+	</Window>
+</Alloy>

@@ -1,0 +1,5 @@
+<Alloy>
+	<Window id="testWin" backgroundColor="white">
+		<Button id="testClick" title="Test" />
+	</Window>
+</Alloy>

@@ -1,0 +1,18 @@
+<Alloy>
+	<Window id="loginWin">
+		<RightNavButton>
+            <Button title="Back" onClick="closeWindow" />
+        </RightNavButton>
+        <View id="loginContainer">
+        	<TableView id="loginTable">
+        		<TableViewRow>
+        			<TextField id="usernameTxt" />
+        		</TableViewRow>
+	        	<TableViewRow>
+	        		<TextField id="passwordTxt" />
+	        	</TableViewRow>
+	        </TableView>
+	        <Button id="loginButton" />
+       	</View>
+	</Window>
+</Alloy>

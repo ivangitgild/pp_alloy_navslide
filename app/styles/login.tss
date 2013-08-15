@@ -1,0 +1,56 @@
+"#loginContainer": {
+	backgroundColor:'#f4f4f4',
+    layout: "vertical"
+},
+"#loginTable": {
+	width: '250dp', 
+    height: '120dp',
+    scrollable: false
+},
+"#usernameTxt":{
+	right: '10dp',
+    height:'45dp',
+    width: '250dp',
+    hintText: 'Username',
+    textAlign: 'right',
+    borderStyle: Ti.UI.INPUT_BORDERSTYLE_NONE,
+    backgroundColor: 'transparent', 
+    borderWidth: 0, 
+    borderColor: 'transparent'
+},
+"#usernameImg":{
+	height: '25dp',
+    width: '25dp',
+    top: '10dp',
+    left: '12dp',
+    backgroundImage: "/images/icon-username.png",
+    orientationModes: [Ti.UI.PORTRAIT]
+},
+"#passwordTxt": {
+	right: '10dp',
+    hintText: 'Password',
+    height:'45dp',
+    width: '250dp',
+    textAlign: 'right',
+    borderStyle: Ti.UI.INPUT_BORDERSTYLE_NONE,
+    passwordMask:true,
+    backgroundColor: 'transparent', 
+    borderWidth: 0, 
+    borderColor: 'transparent'
+},
+"#passwordImg": {
+	height: '25dp',
+    width: '25dp',
+    top: '10dp',
+    left: '12dp',
+    backgroundImage: "/images/icon-password.png"
+},
+"#loginButton": {
+	top: '10dp',
+    left: '10dp',
+    width: '200dp',
+    height:'45dp',
+    theme: 'white',
+    buttonLabelTop: '10dp',
+    buttonLabelSize: '17dp'
+}
