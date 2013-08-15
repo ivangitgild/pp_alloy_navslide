@@ -1,4 +1,4 @@
-var isAndroid = "android" === Ti.Platform.osname;
+var isAndroid = true;
 
 exports.createNavigationWindow = function(baseWindow) {
     var me;

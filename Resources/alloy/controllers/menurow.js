@@ -24,7 +24,6 @@ function Controller() {
     $.__views.__alloyId6.add($.__views.title);
     $.__views.icon = Ti.UI.createImageView({
         width: "38dp",
-        right: 0,
         id: "icon"
     });
     $.__views.row.add($.__views.icon);
@@ -35,6 +34,9 @@ function Controller() {
     $.title.text = args.title || "";
     $.row.customView = args.customView || "";
     $.row.customTitle = $.title;
+    $.icon.applyProperties({
+        left: .84 * Ti.Platform.displayCaps.platformWidth - 45
+    });
     _.extend($, exports);
 }
 

@@ -13,22 +13,22 @@ function Controller() {
             });
             var args = {
                 title: "Account",
-                image: "images/ic_search.png"
+                image: "/images/icons/grey-arrow.png"
             };
             ppSection.add(Alloy.createController("menurow", args).getView());
             var args = {
                 title: "My Favorites",
-                image: "images/ic_search.png"
+                image: "/images/icons/grey-arrow.png"
             };
             ppSection.add(Alloy.createController("menurow", args).getView());
         } else {
             var argsLogin = {
                 title: "Login",
-                image: "images/ic_search.png"
+                image: "/images/icons/grey-arrow.png"
             };
             var argsSignup = {
                 title: "Create Account",
-                image: "images/ic_search.png",
+                image: "/images/icons/grey-arrow.png",
                 baseWin: $.win
             };
             ppSection.add(Alloy.createController("menurow", argsLogin).getView());
@@ -40,7 +40,7 @@ function Controller() {
         });
         var argsSearch = {
             title: "Search Rentals",
-            image: "images/ic_search.png"
+            image: "/images/icons/grey-arrow.png"
         };
         discoverSection.add(Alloy.createController("menurow", argsSearch).getView());
         tableData.push(discoverSection);
@@ -51,7 +51,7 @@ function Controller() {
         for (var index = 0; count > index; index++) {
             var argsInfo = {
                 title: ppmoreinfo[index].title,
-                images: "images/ic_search.png"
+                image: "/images/icons/grey-arrow.png"
             };
             informationSection.add(Alloy.createController("menurow", argsInfo).getView());
         }
@@ -133,9 +133,7 @@ function Controller() {
         Ti.API.debug("baseWindow heard close");
         $.win.addEventListener("android:back", listenForBackButton);
     });
-    "iphone" === Ti.Platform.osname ? $.win.open({
-        transition: Titanium.UI.iPhone.AnimationStyle.FLIP_FROM_LEFT
-    }) : $.win.open();
+    $.win.open();
     _.extend($, exports);
 }
 

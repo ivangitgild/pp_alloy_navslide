@@ -5,8 +5,7 @@
   }
 },
 "#icon": {
-  width: "38dp",
-  right: 0
+  width: "38dp"
 },
 "#title": {
   left: "2dp"

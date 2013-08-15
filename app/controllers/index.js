@@ -20,14 +20,14 @@ function createSection() {
 		var args = {
 			title : 'Account',
 			//customView : 'view',
-			image : "images/ic_search.png"
+			image : "/images/icons/grey-arrow.png"
 		};
 		ppSection.add(Alloy.createController('menurow', args).getView());
 		//ppSection.add(account);
 		var args = {
 			title : 'My Favorites',
 			//customView : 'view',
-			image : "images/ic_search.png"
+			image : "/images/icons/grey-arrow.png"
 		};
 		
 		ppSection.add(Alloy.createController('menurow', args).getView());
@@ -36,12 +36,12 @@ function createSection() {
 		var argsLogin = {
 			title : 'Login',
 			//customView : 'view',
-			image : "images/ic_search.png"
+			image : "/images/icons/grey-arrow.png"
 		};
 		var argsSignup = {
 			title : 'Create Account',
 			//customView : 'view',
-			image : "images/ic_search.png",
+			image : "/images/icons/grey-arrow.png",
 			baseWin : $.win
 		};
 		
@@ -58,7 +58,7 @@ function createSection() {
 	
 	var argsSearch = {
 		title : 'Search Rentals',
-		image : "images/ic_search.png"
+		image : "/images/icons/grey-arrow.png"
 	};
 	
 	discoverSection.add(Alloy.createController('menurow',argsSearch).getView());
@@ -72,7 +72,7 @@ function createSection() {
 		
 		var argsInfo = {
 			title : ppmoreinfo[index].title,
-			images : "images/ic_search.png"
+			image : "/images/icons/grey-arrow.png"
 		};
 		
 		informationSection.add(Alloy.createController('menurow',argsInfo).getView());
