@@ -1,4 +1,4 @@
-var platform = "android";
+var platform = Ti.Platform.osname;
 
 var slider = null;
 
@@ -115,6 +115,9 @@ exports.createSlider = function() {
     };
     slider.loadWindow = function(proxy) {
         var win = proxy.createFunction();
+        "android" != Ti.Platform.osname && win.addEventListener("swipe", function(e) {
+            "right" == e.direction && slider.open();
+        });
         proxy.window = require("navWindow").createNavigationWindow(win);
         win.nav = proxy.window;
         var button = Ti.UI.createButton({
@@ -123,27 +126,33 @@ exports.createSlider = function() {
         button.addEventListener("click", function() {
             slider.open();
         });
-        var titleBar = Ti.UI.createLabel({
-            height: "44dp",
-            top: 0,
-            backgroundColor: "#498BF3",
-            textAlign: "center",
-            color: "white",
-            width: Ti.UI.FILL,
-            text: win.title
-        });
-        win.add(titleBar);
-        button.top = "7dp";
-        button.left = "7dp";
-        button.width = "42dp";
-        button.height = "30dp";
-        win.add(button);
-        win.addEventListener("android:back", function() {
-            Ti.API.debug("heard back!");
-        });
-        win.addEventListener("swipe", function(e) {
-            "right" == e.direction && button.fireEvent("click");
-        });
+        if ("android" == Ti.Platform.osname) {
+            var titleBar = Ti.UI.createLabel({
+                height: "44dp",
+                top: 0,
+                backgroundColor: "#498BF3",
+                textAlign: "center",
+                color: "white",
+                width: Ti.UI.FILL,
+                text: win.title
+            });
+            win.add(titleBar);
+            button.top = "7dp";
+            button.left = "7dp";
+            button.width = "42dp";
+            button.height = "30dp";
+            win.add(button);
+            win.addEventListener("android:back", function() {
+                Ti.API.debug("heard back!");
+            });
+            win.addEventListener("swipe", function(e) {
+                "right" == e.direction && button.fireEvent("click");
+            });
+        } else {
+            win.leftNavButton = button;
+            proxy.rightNavButton && (win.rightNavButton = proxy.rightNavButton());
+            win.borderRadius = 2;
+        }
         proxy.window.left = status == STATUS.CLOSED ? 0 : OPEN_LEFT;
         proxy.window.width = Ti.Platform.displayCaps.platformWidth;
     };

@@ -44,8 +44,12 @@ function createSection() {
 			image : "/images/icons/grey-arrow.png",
 			baseWin : $.win
 		};
-		
-		ppSection.add(Alloy.createController('menurow', argsLogin).getView());
+		var loginRow = Alloy.createController('menurow', argsLogin).getView();
+		loginRow.addEventListener('click', function(){
+			var loginWin = Alloy.createController('login').getView();
+			loginWin.open({ modal : true });
+		});
+		ppSection.add(loginRow);
 		ppSection.add(Alloy.createController('menurow', argsSignup).getView());
 
 	}
