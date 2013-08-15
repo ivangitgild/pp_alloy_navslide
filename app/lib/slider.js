@@ -147,21 +147,65 @@ exports.createSlider = function() {
 	slider.loadWindow = function(proxy) {
 		// Window has not been created yet
 		var win = proxy.createFunction();
+		win.moving = false;
+		win.axis = 0;
 		if (Ti.Platform.osname != 'android') {
 			win.addEventListener('swipe', function(e) {
 				if (e.direction == 'right') {
-					slider.open();
+					//slider.open();
 				}
 			});
 		}
+		
 		proxy.window = require('navWindow').createNavigationWindow(win);
 		win.nav = proxy.window;
+		
 		var button = Ti.UI.createButton({
 			image : "/images/button.png"
 		});
 		button.addEventListener('click', function() {
 			slider.open();
 		});
+		
+		win.addEventListener('touchstart', function(e){
+			e.source.axis = parseInt(e.x);
+		});
+		win.addEventListener('touchmove', function(e){
+			// Subtracting current position to starting horizontal position
+		    var coordinates = parseInt(e.x) - e.source.axis;
+		    // Detecting movement after a 20px shift
+		    if(coordinates > 0 || coordinates < -40){
+		        e.source.moving = true;
+		    }
+		    // Locks the window so it doesn't move further than allowed
+		    if(e.source.moving == true && coordinates <= OPEN_LEFT && coordinates >= 0){
+		        // This will smooth the animation and make it less jumpy
+		        visibleWindow.animate({
+		            left:coordinates,
+		            duration : ANIMATION_DURATION,
+					curve : Ti.UI.ANIMATION_CURVE_EASE_IN_OUT
+		        });
+		        // Defining coordinates as the final left position
+		        visibleWindow.left = coordinates;
+		    }
+		});
+		
+		win.addEventListener('touchend', function(e){
+		    // No longer moving the window
+		    e.source.moving = false;
+		    if(visibleWindow.left >= 150 && visibleWindow.left < OPEN_LEFT){
+		        // Repositioning the window to the right
+		        button.fireEvent('click');
+		        //menuButton.toggle = true;
+		    }else{
+		        // Repositioning the window to the left
+		        slider.close();
+		        //menuButton.toggle = false;
+		    }
+		});
+
+		
+		
 		if (Ti.Platform.osname == 'android') {
 			/* You might want to do your own stuff here.
 			 * I usually have my own special Android window

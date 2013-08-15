@@ -115,8 +115,10 @@ exports.createSlider = function() {
     };
     slider.loadWindow = function(proxy) {
         var win = proxy.createFunction();
+        win.moving = false;
+        win.axis = 0;
         "android" != Ti.Platform.osname && win.addEventListener("swipe", function(e) {
-            "right" == e.direction && slider.open();
+            "right" == e.direction;
         });
         proxy.window = require("navWindow").createNavigationWindow(win);
         win.nav = proxy.window;
@@ -125,6 +127,25 @@ exports.createSlider = function() {
         });
         button.addEventListener("click", function() {
             slider.open();
+        });
+        win.addEventListener("touchstart", function(e) {
+            e.source.axis = parseInt(e.x);
+        });
+        win.addEventListener("touchmove", function(e) {
+            var coordinates = parseInt(e.x) - e.source.axis;
+            (coordinates > 0 || -40 > coordinates) && (e.source.moving = true);
+            if (true == e.source.moving && OPEN_LEFT >= coordinates && coordinates >= 0) {
+                visibleWindow.animate({
+                    left: coordinates,
+                    duration: ANIMATION_DURATION,
+                    curve: Ti.UI.ANIMATION_CURVE_EASE_IN_OUT
+                });
+                visibleWindow.left = coordinates;
+            }
+        });
+        win.addEventListener("touchend", function(e) {
+            e.source.moving = false;
+            visibleWindow.left >= 150 && OPEN_LEFT > visibleWindow.left ? button.fireEvent("click") : slider.close();
         });
         if ("android" == Ti.Platform.osname) {
             var titleBar = Ti.UI.createLabel({
